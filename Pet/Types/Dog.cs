@@ -6,5 +6,4 @@ namespace Pet.Types;
 public class Dog : Pet
 {
 
-
 }
