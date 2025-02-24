@@ -2,7 +2,9 @@
 
 Sample code to reproduce HotChocolate's inability to register reference resolvers on entity interfaces.
 
-This violates Apollo's documentation for entity interfaces <https://www.apollographql.com/docs/graphos/schema-design/federated-schemas/entities/interfaces#example-schemas>, <https://www.apollographql.com/docs/graphos/schema-design/federated-schemas/entities/interfaces#required-resolvers:~:text=Subgraph%20A%20needs,for%20Media>
+This violates Apollo's documentation for entity interfaces:
+* <https://www.apollographql.com/docs/graphos/schema-design/federated-schemas/entities/interfaces#example-schemas>
+* <https://www.apollographql.com/docs/graphos/schema-design/federated-schemas/entities/interfaces#required-resolvers:~:text=Subgraph%20A%20needs,for%20Media>
 
 This sample includes a subgraph that when federated, will encounter runtime errors.
 
