@@ -1,0 +1,62 @@
+﻿schema @link(url: "https:\/\/specs.apollo.dev\/federation\/v2.5", import: [ "@interfaceObject", "@key", "@tag", "FieldSet" ]) {
+  query: Query
+}
+
+type Owner @tag(name: "Test") @key(fields: "id") {
+  id: String!
+  name: String!
+  birthDate: String!
+  pets: [Pet!]!
+}
+
+type Pet @interfaceObject @key(fields: "id") {
+  id: String!
+  owners: [Owner!]!
+}
+
+type Query {
+  owner(id: String!): Owner @cost(weight: "10")
+  ownedPets: [Pet!]! @cost(weight: "10")
+  _service: _Service!
+  _entities(representations: [_Any!]!): [_Entity]!
+}
+
+"This type provides a field named sdl: String! which exposes the SDL of the service's schema. This SDL (schema definition language) is a printed version of the service's schema including the annotations of federation directives. This SDL does not include the additions of the federation spec."
+type _Service {
+  sdl: String!
+}
+
+"Union of all types that key directive applied. This information is needed by the Apollo federation gateway."
+union _Entity = Owner | Pet
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+"Provides meta information to the router that this entity type is an interface in the supergraph."
+directive @interfaceObject on OBJECT
+
+"Used to indicate a combination of fields that can be used to uniquely identify and fetch an object or interface."
+directive @key(fields: FieldSet! resolvable: Boolean = true) repeatable on OBJECT | INTERFACE
+
+"Links definitions within the document to external schemas."
+directive @link("Gets imported specification url." url: String! "Gets optional list of imported element names." import: [String!]) repeatable on SCHEMA
+
+"""
+The @tag directive is used to apply arbitrary string
+metadata to a schema location. Custom tooling can use
+this metadata during any step of the schema delivery flow,
+including composition, static analysis, and documentation.
+
+interface Book {
+  id: ID! @tag(name: "your-value")
+  title: String!
+  author: String!
+}
+"""
+directive @tag("The name of the tag." name: String!) repeatable on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+"Scalar representing a set of fields."
+scalar FieldSet
+
+"The _Any scalar is used to pass representations of entities from external services into the root _entities field for execution. Validation of the _Any scalar is done by matching the __typename and @external fields defined in the schema."
+scalar _Any

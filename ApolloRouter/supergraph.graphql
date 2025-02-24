@@ -1,0 +1,93 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
+  @link(url: "https://specs.apollo.dev/tag/v0.3")
+{
+  query: Query
+}
+
+directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+directive @tag(name: String!) repeatable on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION | SCHEMA
+
+type Cat implements Pet
+  @join__implements(graph: PET, interface: "Pet")
+  @join__type(graph: PET, key: "id")
+{
+  id: String!
+  name: String
+  birthDate: String
+  owners: [Owner!]! @join__field
+}
+
+type Dog implements Pet
+  @join__implements(graph: PET, interface: "Pet")
+  @join__type(graph: PET, key: "id")
+{
+  id: String!
+  name: String
+  birthDate: String
+  owners: [Owner!]! @join__field
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  OWNER @join__graph(name: "owner", url: "http://localhost:6001/graphql")
+  PET @join__graph(name: "pet", url: "http://localhost:6000/graphql")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Owner
+  @join__type(graph: OWNER, key: "id")
+  @tag(name: "Test")
+{
+  id: String!
+  name: String!
+  birthDate: String!
+  pets: [Pet!]!
+}
+
+interface Pet
+  @join__type(graph: OWNER, key: "id", isInterfaceObject: true)
+  @join__type(graph: PET, key: "id")
+{
+  id: String!
+  owners: [Owner!]! @join__field(graph: OWNER)
+  name: String @join__field(graph: PET)
+  birthDate: String @join__field(graph: PET)
+}
+
+type Query
+  @join__type(graph: OWNER)
+  @join__type(graph: PET)
+{
+  owner(id: String!): Owner @join__field(graph: OWNER)
+  ownedPets: [Pet!]! @join__field(graph: OWNER)
+  pet(id: String!): Pet @join__field(graph: PET)
+}

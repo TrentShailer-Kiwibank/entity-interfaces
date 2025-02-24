@@ -1,0 +1,12 @@
+# Version from https://github.com/apollographql/federation/releases
+federation_version: =2.9.3
+subgraphs:
+  pet:
+    routing_url: http://localhost:6000/graphql
+    schema:
+      file: ../Pet/schema.graphql
+
+  owner:
+    routing_url: http://localhost:6001/graphql
+    schema:
+      file: ../Owner/schema.graphql

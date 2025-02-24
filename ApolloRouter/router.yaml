@@ -1,0 +1,35 @@
+#############Developer testing only################
+cors:
+  allow_any_origin: true
+supergraph:
+  listen: 0.0.0.0:4000
+  introspection: true
+headers:
+  all: # Header rules for all subgraphs
+    request:
+      - propagate:
+          matching: .*
+rhai:
+  # Your rhai scripts are loaded from a relative directory
+  # (relative to the directory in which your router is executing)
+  # You can change this location by specifying scripts as below:
+  scripts: "/rhai/scripts"
+
+  # You must have a "main" rhai file. By default this is "main.rhai"
+  # You can change this name by specifying main:
+  main: "plugin.rhai"
+
+health_check:
+  listen: 0.0.0.0:8088
+  enabled: true
+  
+#####Dev Only Settings#####
+sandbox:
+  enabled: true
+homepage:
+  enabled: false
+include_subgraph_errors:
+  all: true
+plugins:
+  # Enable with the header, Apollo-Expose-Query-Plan: true
+  experimental.expose_query_plan: true
