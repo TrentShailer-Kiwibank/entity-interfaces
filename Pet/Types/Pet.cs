@@ -4,8 +4,9 @@ using HotChocolate.ApolloFederation.Types;
 namespace Pet.Types;
 
 [InterfaceType]
-// TODO this shouldn't be required
+// Required outside the body for HotChocolate to register the @key
 [Key(fieldSet: "id")]
+// Required outside the body to be inherited by concrete types.
 [ReferenceResolver(EntityResolverType = typeof(Pet), EntityResolver = nameof(ResolveReference))]
 public abstract class Pet
 {
