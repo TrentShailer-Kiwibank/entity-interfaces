@@ -61,7 +61,7 @@ This sample includes a subgraph that when federated, will encounter runtime erro
 1. `dotnet run`
 1. `cd ApolloRouter`
 1. `./apollo-router.sh`
-1. <localhost:4000>
+1. <http://localhost:4000>
 1. Query:
   ```graphql
   query {
